@@ -2,6 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import tkinter as tk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from customtkinter import *
 
 #import data
 file = "./Data/coffee_sales.csv"
@@ -83,29 +84,43 @@ product_sales = sales_df.groupby('Product')['Sales'].sum()
 fig3, ax3 = plt.subplots()
 product_sales.plot(kind='pie', autopct='%1.1f%%', colors=mellow_palette)
 ax3.set_title('Customer Demand by Product Category')
-#ax3.set_xticklabels(product_sales, rotation=45)  # Rotate x-axis labels for better readability
 ax3.set_ylabel('')
 ax3.set_facecolor('#F5F5F5')
 #plt.show()
 
 
 #create tkinter window and add charts
-root = tk.Tk()
+#creates customtkinter window, allowing for improved UX/UI
+root = CTk()
 root.title("Sales Dashboard")
 root.state("zoomed")
 
-frame = tk.Frame(root)
-frame.pack(fill="both", expand=True)
 
-canvas1 = FigureCanvasTkAgg(fig, frame)
+#adds sidebar to dash
+side_frame = tk.Frame(root, bg="#003f5c")
+side_frame.pack(side="left", fill="y")
+
+label = tk.Label(side_frame, text="Dashboard", bg="#003f5c", fg="#FFF", font=25)
+label.pack(pady=50, padx=20)
+
+#adds upper row (frame) to dash, then adding canvas 1 & 2 to add charts
+upper_frame = tk.Frame(root)
+upper_frame.pack(fill="both", expand=True)
+
+
+canvas1 = FigureCanvasTkAgg(fig, upper_frame)
 canvas1.draw()
 canvas1.get_tk_widget().pack(side="left", fill="both", expand=True)
 
-canvas2 = FigureCanvasTkAgg(fig2, frame)
+canvas2 = FigureCanvasTkAgg(fig2, upper_frame)
 canvas2.draw()
 canvas2.get_tk_widget().pack(side="left", fill="both", expand=True)
 
-canvas3 = FigureCanvasTkAgg(fig3, frame)
+#creates lower row (frame) and charts. Placing code for lower chart below the lower_frame creation puts it in the bottom frame
+lower_frame = tk.Frame(root)
+lower_frame.pack(fill="both")
+
+canvas3 = FigureCanvasTkAgg(fig3, lower_frame)
 canvas3.draw()
 canvas3.get_tk_widget().pack(side="left", fill="both", expand=True)
 
